@@ -1,0 +1,49 @@
+
+	body
+	{
+		background-color: #008080;
+	}
+	#canvas
+	{
+		display: block;
+		margin: 0px auto;
+		background-color: white;
+	}
+	#statistics
+	{
+		display: flex;
+		flex-direction: row;
+		width: 450px;
+		height: 50px;
+	}
+	#health
+	{
+		display: block;
+		width: 200px;
+		height: 25px;
+		border: 2px solid;
+		border-color: red;
+	}
+	#mana
+	{
+		display: block;
+		width: 200px;
+		height: 25px;
+		border: 2px solid;
+		border-color: blue;
+		margin-left: 10px;
+	}
+	#health-row
+	{
+		display: block;
+		width: 200px;
+		height: 25px;
+		background-color: red;
+	}
+	#mana-row
+	{
+		display: block;
+		width: 200px;
+		height: 25px;
+		background-color: blue;
+	}
