@@ -143,6 +143,7 @@ function spawnBoss(){
 			y: 340,
 			pW: 300,
 			pH: 300,
+			move: 1,
 		});
 	}else{
 		enemies.push({
@@ -151,6 +152,7 @@ function spawnBoss(){
 			y: 340,
 			pW: 300,
 			pH: 300,
+			move: -1,
 		});
 	}
 }
@@ -249,7 +251,7 @@ function draw(){
 				drawEnemies.drawLeft();
 			}
 		}else{
-			if (player.x > mapWidth / 2){
+			if (enemies[i].move > 0){
 				drawEnemies.drawBossRight();
 				enemies[i].x += 1;
 			}else{
