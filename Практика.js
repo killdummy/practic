@@ -48,7 +48,7 @@ function init(){
 	map.width = mapWidth;
 	map.height = mapHeight;
 
-	spawnOpponent(1);
+	spawnOpponent(7);
 
 	startLoop();
 
@@ -363,12 +363,12 @@ function draw(){
 				enemies.splice(0, 1);
 				i = 0;
 				boss = false;
-				spawnOpponent(5);
+				spawnOpponent(7);
 			}
 			score++;
 			console.log(score);
 			if (score % 10 == 0) {
-				enemies.splice(0, 5);
+				enemies.splice(0, 7);
 				spawnBoss();
 				i = 0;
 				alert("DANGER!!!!")
