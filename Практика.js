@@ -17,10 +17,18 @@ var bossImageRight = new Image();
 bossImageRight.src = "images/bossRight.png";
 var bossImageLeft = new Image();
 bossImageLeft.src = "images/bossLeft.png";
+var lightningImage = new Image();
+lightningImage.src = "images/lightning.png";
+var shieldImage = new Image();
+shieldImage.src = "images/shield.png";
+var waveRightImage = new Image();
+waveRightImage.src = "images/waveRight.png"
+var waveLeftImage = new Image();
+waveLeftImage.src = "images/waveLeft.png"
 var testX = 0, testY = 0;
 var isPlaying;
-var bullet = [], enemies = [], timer = 0, bullets = 0, i = 0, j = 0, orientation = 0, boss = false;
-
+var bullet = [], lightning = [], enemies = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
+var effectActiv = false, waveCount = 0, waveLeft, waveRight;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
@@ -40,7 +48,7 @@ function init(){
 	map.width = mapWidth;
 	map.height = mapHeight;
 
-	spawnOpponent(10);
+	spawnOpponent(1);
 
 	startLoop();
 
@@ -72,6 +80,30 @@ function init(){
 					alert("play");
 				}
 				break;
+			case 16:
+				if (player.mana > 19){
+					if (shieldActiv == false){
+						shieldActiv = true;
+					}else{
+						shieldActiv = false;
+					}
+				}
+				break;
+			case 50:
+				if (player.mana > 19){ 
+					effectActiv = true;
+					player.mana -= 20;
+					for (i = 0; i < enemies.length; i++){
+						if ((enemies[i].x > player.x - 300) && (enemies[i].x < player.x + 300)){
+							enemies[i].effect = true;
+						}
+					}
+				}
+				break;
+			case 51:
+				if (player.mana > 29) player.mana -= 30;
+				break;
+			
 		}
 	});
 
@@ -119,6 +151,8 @@ function spawnOpponent(count){
 				y: 490,
 				pW: 100,
 				pH: 100,
+				effect: false,
+				distance: 100,
 			});
 		}else{
 			enemies.push({
@@ -127,6 +161,8 @@ function spawnOpponent(count){
 				y: 490,
 				pW: 100,
 				pH: 100,
+				effect: false,
+				distance: 100,
 			});
 		}
 		ran = Math.random();
@@ -134,7 +170,6 @@ function spawnOpponent(count){
 }
 
 function spawnBoss(){
-	enemies.splice(0, 9);
 	boss = true;
 	if (player.x > mapWidth / 2){
 		enemies.push({
@@ -181,6 +216,18 @@ var drawMap = {
 var drawBullet = {
 	draw: function(){
 		ctxMap.drawImage(bulletImage, 0, 0, 60, 58, bullet[i].x, bullet[i].y, 50, 50);
+	},
+	drawLight: function(){
+		ctxMap.drawImage(lightningImage, 0, 0, 497, 556, lightning[i].x, lightning[i].y, 70, 250);
+	},
+	drawShield: function(){
+		ctxMap.drawImage(shieldImage, 0, 350, 200, 200, player.x-47, player.y-25, 250, 200);
+	},
+	drawWaveRight: function(){
+		ctxMap.drawImage(waveRightImage, 0, 0, 165, 250, waveRight, player.y, 100, 150);
+	},
+	drawWaveLeft: function(){
+		ctxMap.drawImage(waveLeftImage, 0, 0, 165, 250, waveLeft, player.y, 100, 150);
 	}
 }
 
@@ -206,13 +253,26 @@ var player = {
 
 function draw(){
 	ctxMap.clearRect(0, 0, mapWidth, mapHeight);
+	drawMap.draw();
 	stat();
 	
-	drawMap.draw();
+	document.form.score.value = score;
+
+	if (shieldActiv) drawBullet.drawShield();
+	if (player.mana < 5) shieldActiv = false;
+
 	if (turn == 0) {
 		player.drawRight();
 	}else{
 		player.drawLeft();
+	}
+
+	if (lightning.length != 0){
+		for (i = 0; i < lightning.length; i++){
+			drawBullet.drawLight();
+			lightning[i].lifeTime++;
+			if (lightning[i].lifeTime > 50) lightning.splice(i, 1);
+		}
 	}
 	
 	if (rightPressed && player.x < mapWidth - 150) player.x += player.speed;
@@ -239,16 +299,34 @@ function draw(){
 
 	if (timer % 12 == 0){
 		bullets = 0;
+		lights = 0;
 	}
 
 	for (i = 0; i < enemies.length; i++){
 		if (!boss){
-			if (enemies[i].x <= player.x){
-				enemies[i].x += 2;
-				drawEnemies.drawRight();
+			if (!enemies[i].effect){
+				if (enemies[i].x <= player.x){
+					enemies[i].x += 2;
+					drawEnemies.drawRight();
+				}else{
+					enemies[i].x -= 2;
+					drawEnemies.drawLeft();
+				}
 			}else{
-				enemies[i].x -= 2;
-				drawEnemies.drawLeft();
+				if (enemies[i].distance > 0){
+					if (enemies[i].x > player.x){
+						enemies[i].distance--;
+						enemies[i].x += 3.3;
+						drawEnemies.drawLeft();
+					}else{
+						enemies[i].distance--;
+						enemies[i].x -= 3.3;
+						drawEnemies.drawRight();
+					}
+				}else{
+					enemies[i].distance = 100;
+					enemies[i].effect = false;
+				}
 			}
 		}else{
 			if (enemies[i].move > 0){
@@ -260,38 +338,46 @@ function draw(){
 			}
 		}
 		if (!boss){
-			if ((enemies[i].x > player.x) && (enemies[i].x < player.x + player.pW) && (player.y > 340)) player.health -= 1;
+			if ((enemies[i].x > player.x) && (enemies[i].x < player.x + player.pW) && (player.y > 340) && (!shieldActiv)) player.health -= 1;
 		}else{
 			if (((enemies[i].x - 30) < player.x) && ((enemies[i].x + enemies[i].pW) > player.x)) player.health -= 10;
 		}
+
+		for (j = 0; j < lightning.length; j++){
+			if ((lightning[j].x > enemies[i].x) && (lightning[j].x < enemies[i].x + enemies[i].pW)){
+				if (!boss) enemies[i].health -= 30;
+			}
+		}
+
 		for (j = 0; j < bullet.length; j++){
 			if ((bullet[j].x > enemies[i].x) && (bullet[j].x < enemies[i].x + enemies[i].pW)){
 				bullet.splice(j, 1);
 				enemies[i].health -= 10;
 			}
-			if (enemies[i].health <= 0) {
-				if (!boss) enemies.splice(i, 1);
-				score++;
-				console.log(score);
-				if (score == 10) {
-					spawnBoss();
-					i = 0;
-					alert("DANGER!!!!")
-				}
-				//console.log("i:" + i);
-				//console.log("score:" + score);
-				if (!boss) spawnOpponent(1);
+		}
+		if (enemies[i].health <= 0) {
+			if (!boss) {
+				enemies.splice(i, 1);
+				spawnOpponent(1);
+			}else{
+				enemies.splice(0, 1);
+				i = 0;
+				boss = false;
+				spawnOpponent(5);
+			}
+			score++;
+			console.log(score);
+			if (score % 10 == 0) {
+				enemies.splice(0, 5);
+				spawnBoss();
+				i = 0;
+				alert("DANGER!!!!")
 			}
 		}
-		if (score > 10) enemies.splice(0, 1);
 	}
 
-	if (player.health <= 0 || score > 10){
-		if (player.health <= 0){
-			alert("You died");
-		}else{
-			alert("You win!!!");
-		}
+	if (player.health <= 0){
+		alert("You died");
 		bullet.splice(0, 100);
 		enemies.splice(0, 100);
 		player.health = 100;
@@ -301,6 +387,19 @@ function draw(){
 		boss = false;
 	}
 
+	if (effectActiv){
+		waveRight = player.x + 100;
+		waveLeft = player.x - 60;
+		waveCount += 5;
+		waveRight += waveCount;
+		waveLeft -= waveCount;
+		drawBullet.drawWaveRight();
+		drawBullet.drawWaveLeft();
+		if (waveCount > 100) {
+			effectActiv = false;
+			waveCount = 0;
+		}
+	}
 
 	addEventListener("keydown", function(event){
 		switch(event.keyCode){
@@ -323,9 +422,42 @@ function draw(){
                             move: -10
                         });
                     }					
-				bullets += 1;
+				bullets++;
 				}
 				break;
+			case 51:
+				if (player.mana > 29){
+					var moveLight = turn;
+					var countLight = 0;
+					var lightsX = player.x;
+					if (lights <= 0){
+						var storm = setInterval(function(){
+								if (countLight < 12){
+									if (moveLight == 0){
+										lightning.push({
+											x: Math.random() * 200 + lightsX + player.pW,
+											y: 350,
+											pW: 30,
+											pH: 250,
+											lifeTime: 0,
+											move: 1,
+										});
+									}else{
+										lightning.push({
+											x: Math.random() * 200 + lightsX - player.pW * 2,
+											y: 350,
+											pW: 30,
+											pH: 250,
+											lifeTime: 0,
+											move: 1,
+										});
+									}
+								countLight++;
+								}
+						}, 300)
+					lights++;
+					}	
+				}
 		}
 	});
 }
@@ -334,5 +466,6 @@ function recoveryStat(){
 	recovery = setInterval(function(){
 		if (player.mana < 100) player.mana += 5;
 		if (player.health < 100) player.health += 2;
+		if (shieldActiv) player.mana -= 20;
 	}, 1000)
 }
