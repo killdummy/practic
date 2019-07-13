@@ -28,7 +28,7 @@ waveLeftImage.src = "images/waveLeft.png"
 var testX = 0, testY = 0;
 var isPlaying;
 var bullet = [], lightning = [], enemies = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
-var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, mapDrawWidth2 = mapWidth;
+var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
