@@ -7,8 +7,10 @@ var heroImageRight = new Image();
 heroImageRight.src = "images/heroRight.png";
 var heroImageLeft = new Image();
 heroImageLeft.src = "images/heroLeft.png";
-var mapImage = new Image();
-mapImage.src = "images/forest.jpg";
+var mapImage1 = new Image();
+mapImage1.src = "images/redForest.png";
+var mapImage2 = new Image();
+mapImage2.src = "images/forest.jpg";
 var bulletImage = new Image();
 bulletImage.src = "images/bullet.png";
 var imageOpponent = new Image();
@@ -28,7 +30,7 @@ waveLeftImage.src = "images/waveLeft.png"
 var testX = 0, testY = 0;
 var isPlaying;
 var bullet = [], lightning = [], enemies = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
-var effectActiv = false, waveCount = 0, waveLeft, waveRight;
+var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, mapDrawWidth2 = mapWidth;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
@@ -208,8 +210,11 @@ var drawEnemies = {
 }
 
 var drawMap = {
-	draw: function(){
-		ctxMap.drawImage(mapImage, 0, 0, 1920, 1080, 0, 0, mapWidth, mapHeight);
+	draw1: function(){
+		ctxMap.drawImage(mapImage1, 0, 90, 2500, 1500, mapDrawWidth1-300, 0, mapWidth+500, mapHeight+500);
+	},
+	draw2: function(){
+		ctxMap.drawImage(mapImage2, 0, 0, 1920, 1080, mapDrawWidth2-300, 0, mapWidth, mapHeight);
 	}
 }
 
@@ -253,7 +258,8 @@ var player = {
 
 function draw(){
 	ctxMap.clearRect(0, 0, mapWidth, mapHeight);
-	drawMap.draw();
+	drawMap.draw1();
+	//drawMap.draw2();
 	stat();
 	
 	document.form.score.value = score;
@@ -275,8 +281,16 @@ function draw(){
 		}
 	}
 	
-	if (rightPressed && player.x < mapWidth - 150) player.x += player.speed;
-    if (leftPressed && player.x > 0) player.x -= player.speed;
+	if (rightPressed && player.x < mapWidth - 150) {
+		mapDrawWidth1--;
+		mapDrawWidth2--;
+		player.x += player.speed;
+	}
+    if (leftPressed && player.x > 0) {
+    	mapDrawWidth1++;
+		mapDrawWidth2++;
+    	player.x -= player.speed;
+    }
 
     if (jumpPressed) {
         player.jumpCount++;
