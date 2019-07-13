@@ -9,8 +9,6 @@ var heroImageLeft = new Image();
 heroImageLeft.src = "images/heroLeft.png";
 var mapImage1 = new Image();
 mapImage1.src = "images/redForest.png";
-var mapImage2 = new Image();
-mapImage2.src = "images/forest.jpg";
 var bulletImage = new Image();
 bulletImage.src = "images/bullet.png";
 var imageOpponent = new Image();
@@ -212,9 +210,6 @@ var drawEnemies = {
 var drawMap = {
 	draw1: function(){
 		ctxMap.drawImage(mapImage1, 0, 90, 2500, 1500, mapDrawWidth1-300, 0, mapWidth+500, mapHeight+500);
-	},
-	draw2: function(){
-		ctxMap.drawImage(mapImage2, 0, 0, 1920, 1080, mapDrawWidth2-300, 0, mapWidth, mapHeight);
 	}
 }
 
@@ -259,7 +254,6 @@ var player = {
 function draw(){
 	ctxMap.clearRect(0, 0, mapWidth, mapHeight);
 	drawMap.draw1();
-	//drawMap.draw2();
 	stat();
 	
 	document.form.score.value = score;
@@ -283,12 +277,10 @@ function draw(){
 	
 	if (rightPressed && player.x < mapWidth - 150) {
 		mapDrawWidth1--;
-		mapDrawWidth2--;
 		player.x += player.speed;
 	}
     if (leftPressed && player.x > 0) {
     	mapDrawWidth1++;
-		mapDrawWidth2++;
     	player.x -= player.speed;
     }
 
