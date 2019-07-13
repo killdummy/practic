@@ -366,13 +366,13 @@ function draw(){
 				spawnOpponent(7);
 			}
 			score++;
-			console.log(score);
 			if (score % 10 == 0) {
 				enemies.splice(0, 7);
 				spawnBoss();
 				i = 0;
 				alert("DANGER!!!!")
 			}
+			console.log("enemies :" + enemies.length);
 		}
 	}
 
