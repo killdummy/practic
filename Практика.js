@@ -377,14 +377,13 @@ function draw(){
 	}
 
 	if (player.health <= 0){
-		ctxMap.clearRect(0, 0, mapWidth, mapHeight);
 		alert("You died");
 		shieldActiv = false;
 		bullet.splice(0, 100);
 		enemies.splice(0, 100);
 		player.health = 100;
 		player.mana = 100;
-		spawnOpponent(10);
+		spawnOpponent(7);
 		score = 0;
 		boss = false;
 	}
