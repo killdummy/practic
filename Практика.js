@@ -367,7 +367,7 @@ function draw(){
 			}
 			score++;
 			if (score % 10 == 0) {
-				enemies.splice(0, 7);
+				enemies.splice(0, 100);
 				spawnBoss();
 				i = 0;
 				alert("DANGER!!!!")
