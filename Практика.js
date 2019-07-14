@@ -549,6 +549,7 @@ function newgame(){
 	player.x = 400;
 	player.y = 450;
 	pause = false;
+	score = 0;
 	startLoop();
 }
 
