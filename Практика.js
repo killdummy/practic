@@ -5,6 +5,10 @@ var ctxMap, map, mapWidth = 1400, mapHeight = 600, healthHero, manaHero, recover
 var rightPressed = false, leftPressed = false, jumpPressed = false;
 var heroImageRight = new Image();
 heroImageRight.src = "images/animRight.png";
+///
+var blood = new Image();
+blood.src = "images/blood.png";
+///
 var heroImageLeft = new Image();
 heroImageLeft.src = "images/animLeft.png";
 var mapImage1 = new Image();
