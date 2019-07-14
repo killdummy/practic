@@ -445,7 +445,6 @@ function draw(){
 		player.health = 100;
 		player.mana = 100;
 		spawnOpponent(7);
-		score = 0;
 		boss = false;
 		///
 		stopLoop();
