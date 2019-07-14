@@ -360,6 +360,7 @@ function draw(){
 
 	for (i = 0; i < enemies.length; i++){
 		if (!boss){
+			if (enemies[i].timer != 50) enemies[i].timer++;
 			if (!enemies[i].effect){
 				if (enemies[i].x <= player.x){
 					enemies[i].x += 2;
