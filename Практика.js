@@ -28,7 +28,7 @@ waveLeftImage.src = "images/waveLeft.png"
 var testX = 0, testY = 0;
 var isPlaying;
 var bullet = [], lightning = [], enemies = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
-var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0;
+var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, tickCount = 0;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
@@ -243,11 +243,13 @@ var player = {
 	speed: 8,
 	jumpCount: 0,
 	jumpLength: 50,
+	xCadrChange: 0,
+	yCadrChange: 0,
 	drawRight: function(){
-		ctxMap.drawImage(heroImageRight, 0, 0, 180, 180, this.x, this.y, this.pW, this.pH);
+		ctxMap.drawImage(heroImageRight, this.xCadrChange, this.yCadrChange, 113, 150, this.x, this.y, this.pW, this.pH);
 	},
 	drawLeft: function(){
-		ctxMap.drawImage(heroImageLeft, 0, 0, 180, 180, this.x, this.y, this.pW, this.pH);
+		ctxMap.drawImage(heroImageLeft, this.xCadrChange, this.yCadrChange, 180, 180, this.x, this.y, this.pW, this.pH);
 	}
 }
 
@@ -256,16 +258,29 @@ function draw(){
 	drawMap.draw1();
 	stat();
 	
+	if (turn == 0) {
+		player.drawRight();
+	}else{
+		player.xCadrChange = 0;
+		player.drawLeft();
+	}
+
+	if (tickCount > 7){
+		tickCount = 0;
+		if (rightPressed) {
+			player.xCadrChange = (player.xCadrChange > 556 ? 0 : player.xCadrChange + 113);
+		}else{
+			player.xCadrChange = 0;
+			tickCount = 0;
+		}
+	}
+
+	tickCount++;
+	
 	document.form.score.value = score;
 
 	if (shieldActiv) drawBullet.drawShield();
 	if (player.mana < 5) shieldActiv = false;
-
-	if (turn == 0) {
-		player.drawRight();
-	}else{
-		player.drawLeft();
-	}
 
 	if (lightning.length != 0){
 		for (i = 0; i < lightning.length; i++){
