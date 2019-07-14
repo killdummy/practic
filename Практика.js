@@ -8,6 +8,10 @@ heroImageRight.src = "images/heroRight.png";
 var heroImageLeft = new Image();
 heroImageLeft.src = "images/heroLeft.png";
 var mapImage1 = new Image();
+///
+var blood = new Image();
+blood.src = "images/blood.png";
+///
 mapImage1.src = "images/redForest.png";
 var bulletImage = new Image();
 bulletImage.src = "images/bullet.png";
@@ -153,6 +157,15 @@ function spawnOpponent(count){
 				pH: 100,
 				effect: false,
 				distance: 100,
+				///
+				timer: 50,
+				atack: function(){
+					if (this.timer == 50){
+						player.health -= 10;
+						this.timer = 0;
+					}
+				}
+				///
 			});
 		}else{
 			enemies.push({
@@ -163,6 +176,15 @@ function spawnOpponent(count){
 				pH: 100,
 				effect: false,
 				distance: 100,
+				///
+				timer: 50,
+				atack: function(){
+					if (this.timer == 50){
+						player.health -= 10;
+						this.timer = 0;
+					}
+				}
+				///
 			});
 		}
 		ran = Math.random();
@@ -248,7 +270,12 @@ var player = {
 	},
 	drawLeft: function(){
 		ctxMap.drawImage(heroImageLeft, 0, 0, 180, 180, this.x, this.y, this.pW, this.pH);
+	},
+	///
+	damaged: function(){
+		ctxMap.drawImage(blood, 0, 0, 700, 700, this.x + 40, this.y + 70, this.pW - 75, this.pH - 75);
 	}
+	///
 }
 
 function draw(){
@@ -344,7 +371,12 @@ function draw(){
 			}
 		}
 		if (!boss){
-			if ((enemies[i].x > player.x) && (enemies[i].x < player.x + player.pW) && (player.y > 340) && (!shieldActiv)) player.health -= 1;
+			if ((enemies[i].x > player.x) && (enemies[i].x < player.x + player.pW - 100) && (player.y > 340) && (!shieldActiv)){
+			/// Добавил - 100 чтобы враги били одинаково с двух сторон
+				enemies[i].atack();
+				player.damaged();
+			///
+			}
 		}else{
 			if (((enemies[i].x - 30) < player.x) && ((enemies[i].x + enemies[i].pW) > player.x)) player.health -= 10;
 		}
