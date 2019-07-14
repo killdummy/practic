@@ -1,6 +1,6 @@
 window.onload = init;
 
-
+//test
 var ctxMap, map, mapWidth = 1400, mapHeight = 600, healthHero, manaHero, recovery, score = 0, pause = false, turn = 0;
 var rightPressed = false, leftPressed = false, jumpPressed = false;
 var heroImageRight = new Image();
