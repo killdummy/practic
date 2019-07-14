@@ -52,7 +52,7 @@ function init(){
 	map.width = mapWidth;
 	map.height = mapHeight;
 
-	spawnOpponent(7);
+	spawnOpponent(0);
 
 	startLoop();
 
