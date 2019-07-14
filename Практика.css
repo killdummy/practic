@@ -60,3 +60,60 @@
 		height: 25px;
 		background-color: blue;
 	}
+
+	#afterdeath{
+		margin-top: 50px;
+		display: none;
+		grid-gap: 50px;
+		margin-left: 250px;
+		margin-right: 250px;
+		grid-template-rows: 1fr 1fr;
+		grid-template-columns: 700px 700px;
+		text-align: center;
+		font-size: 2em;
+		font-family: "Arial";
+		user-select: none;
+		cursor: pointer;
+	}
+
+	#afterdeath a{
+		text-decoration: none;
+		color: white;
+	}
+	#text{
+		margin-right: 10px;
+		text-align: right;
+		cursor: auto;
+	}
+
+	#entername input{
+		width: 80%;
+	}
+	#restab{
+		display: grid;
+		text-align: center;
+		margin: 0px auto;
+		width: 100%;
+		grid-template-columns: 30% 30% 30%;
+		grid-template-rows: 5em 5em 5em 5em 5em 5em 5em 5em 5em 5em 5em 5em;
+		grid-gap: 10px;
+		font-family: 'Open Sans', sans-serif;
+		color: white;
+	}
+	.usertab{
+		font-family: 'Amatic SC', cursive;
+		color: white;
+		font-size: 3rem;
+	}
+
+	.anstab{
+		font-family: 'Amatic SC', cursive;
+		color: white;
+		font-size: 3rem;
+	}
+
+	.timetab{
+		font-family: 'Amatic SC', cursive;
+		color: white;
+		font-size: 3rem;
+	}
