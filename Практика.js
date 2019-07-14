@@ -4,9 +4,9 @@ window.onload = init;
 var ctxMap, map, mapWidth = 1400, mapHeight = 600, healthHero, manaHero, recovery, score = 0, pause = false, turn = 0;
 var rightPressed = false, leftPressed = false, jumpPressed = false;
 var heroImageRight = new Image();
-heroImageRight.src = "images/heroRight.png";
+heroImageRight.src = "images/animRight.png";
 var heroImageLeft = new Image();
-heroImageLeft.src = "images/heroLeft.png";
+heroImageLeft.src = "images/animLeft.png";
 var mapImage1 = new Image();
 mapImage1.src = "images/redForest.png";
 var bulletImage = new Image();
@@ -48,7 +48,7 @@ function init(){
 	map.width = mapWidth;
 	map.height = mapHeight;
 
-	spawnOpponent(7);
+	spawnOpponent(0);
 
 	startLoop();
 
@@ -243,13 +243,14 @@ var player = {
 	speed: 8,
 	jumpCount: 0,
 	jumpLength: 50,
-	xCadrChange: 0,
+	xCadrChangeRight: 0,
+	xCadrChangeLeft: 556,
 	yCadrChange: 0,
 	drawRight: function(){
-		ctxMap.drawImage(heroImageRight, this.xCadrChange, this.yCadrChange, 113, 150, this.x, this.y, this.pW, this.pH);
+		ctxMap.drawImage(heroImageRight, this.xCadrChangeRight, this.yCadrChange, 113, 150, this.x, this.y, this.pW, this.pH);
 	},
 	drawLeft: function(){
-		ctxMap.drawImage(heroImageLeft, this.xCadrChange, this.yCadrChange, 180, 180, this.x, this.y, this.pW, this.pH);
+		ctxMap.drawImage(heroImageLeft, this.xCadrChangeLeft, this.yCadrChange, 113, 150, this.x, this.y, this.pW, this.pH);
 	}
 }
 
@@ -257,30 +258,36 @@ function draw(){
 	ctxMap.clearRect(0, 0, mapWidth, mapHeight);
 	drawMap.draw1();
 	stat();
-	
+
 	if (turn == 0) {
 		player.drawRight();
 	}else{
-		player.xCadrChange = 0;
 		player.drawLeft();
 	}
 
 	if (tickCount > 7){
 		tickCount = 0;
 		if (rightPressed) {
-			player.xCadrChange = (player.xCadrChange > 556 ? 0 : player.xCadrChange + 113);
+			player.xCadrChangeRight = (player.xCadrChangeRight > 556 ? 0 : player.xCadrChangeRight + 113);
 		}else{
-			player.xCadrChange = 0;
-			tickCount = 0;
+			player.xCadrChangeRight = 0;
+		}
+		if (leftPressed) {
+			player.xCadrChangeLeft = (player.xCadrChangeLeft < 113 ? 556 : player.xCadrChangeLeft - 113);
+		}else{
+			player.xCadrChangeLeft = 556;
 		}
 	}
 
 	tickCount++;
 	
+	
 	document.form.score.value = score;
 
 	if (shieldActiv) drawBullet.drawShield();
 	if (player.mana < 5) shieldActiv = false;
+
+
 
 	if (lightning.length != 0){
 		for (i = 0; i < lightning.length; i++){
@@ -352,10 +359,10 @@ function draw(){
 		}else{
 			if (enemies[i].move > 0){
 				drawEnemies.drawBossRight();
-				enemies[i].x += 1;
+				enemies[i].x += 2;
 			}else{
 				drawEnemies.drawBossLeft();
-				enemies[i].x -= 1;
+				enemies[i].x -= 2;
 			}
 		}
 		if (!boss){
