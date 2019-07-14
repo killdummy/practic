@@ -72,12 +72,13 @@ function init(){
 			case 27:
 				if (pause == false){
 					pause = true;
-					stopLoop();
-					alert("pause");
+					stopLoop();///no alert
+					ctxMap.fillStyle = "#00F";
+    				ctxMap.font = "bold 30px sans-serif";
+    				ctxMap.fillText("Pause", 20, 50);
 				}else{
 					pause = false;
 					startLoop();
-					alert("play");
 				}
 				break;
 			case 16:
@@ -153,6 +154,15 @@ function spawnOpponent(count){
 				pH: 100,
 				effect: false,
 				distance: 100,
+				///
+				timer: 50,
+				atack: function(){
+					if (this.timer == 50){
+						player.health -= 10;
+						this.timer = 0;
+					}
+				}
+				///
 			});
 		}else{
 			enemies.push({
@@ -163,6 +173,15 @@ function spawnOpponent(count){
 				pH: 100,
 				effect: false,
 				distance: 100,
+				///
+				timer: 50,
+				atack: function(){
+					if (this.timer == 50){
+						player.health -= 10;
+						this.timer = 0;
+					}
+				}
+				///
 			});
 		}
 		ran = Math.random();
@@ -251,7 +270,12 @@ var player = {
 	},
 	drawLeft: function(){
 		ctxMap.drawImage(heroImageLeft, this.xCadrChangeLeft, this.yCadrChange, 113, 150, this.x, this.y, this.pW, this.pH);
+	},
+	///
+	damaged: function(){
+		ctxMap.drawImage(blood, 0, 0, 700, 700, this.x + 40, this.y + 70, this.pW - 75, this.pH - 75);
 	}
+	///
 }
 
 function draw(){
@@ -366,7 +390,12 @@ function draw(){
 			}
 		}
 		if (!boss){
-			if ((enemies[i].x > player.x) && (enemies[i].x < player.x + player.pW) && (player.y > 340) && (!shieldActiv)) player.health -= 1;
+			if ((enemies[i].x > player.x) && (enemies[i].x < player.x + player.pW - 100) && (player.y > 340) && (!shieldActiv)){
+				/// Добавил - 100 чтобы враги били одинаково с двух сторон
+				enemies[i].atack();
+//				player.health -= 1;
+				player.damaged();
+			}
 		}else{
 			if (((enemies[i].x - 30) < player.x) && ((enemies[i].x + enemies[i].pW) > player.x)) player.health -= 10;
 		}
@@ -405,7 +434,6 @@ function draw(){
 	}
 
 	if (player.health <= 0){
-		alert("You died");
 		shieldActiv = false;
 		bullet.splice(0, 100);
 		enemies.splice(0, 100);
@@ -414,6 +442,14 @@ function draw(){
 		spawnOpponent(7);
 		score = 0;
 		boss = false;
+		///
+		stopLoop();
+		ctxMap.fillStyle = "red";
+    		ctxMap.font = "bold 45px sans-serif";
+    		ctxMap.textAlign = "center";
+    		ctxMap.fillText("Game Over", mapWidth / 2, 80);
+    		showButtons();
+		///
 	}
 
 	if (effectActiv){
@@ -492,9 +528,40 @@ function draw(){
 }
 
 function recoveryStat(){
-	recovery = setInterval(function(){
-		if (player.mana < 100) player.mana += 5;
-		if (player.health < 100) player.health += 2;
-		if (shieldActiv) player.mana -= 20;
+	recovery = setInterval(function(){///&&(!pause)!
+		if ((player.mana < 100)&&(!pause)) player.mana += 5;
+		if ((player.health < 100)&&(!pause)) player.health += 2;
+		if ((shieldActiv)&&(!pause)) player.mana -= 20;
 	}, 1000)
+}
+
+///
+function showButtons(){
+	document.getElementById("afterdeath").style.display = "grid";
+}
+
+function newgame(){
+	document.getElementById("afterdeath").style.display = "none";
+	player.x = 400;
+	player.y = 450;
+	pause = false;
+	startLoop();
+}
+
+function save(){
+	var username = document.form2.username.value;
+	
+	var User = function(name, score){
+	this.name = name;
+	this.score = score;
+	this.time = new Date();
+	}
+
+	var newuser = new User(username, score);
+	var data = [];
+	if (JSON.parse(localStorage.getItem("users")) != null){
+		data = JSON.parse(localStorage.getItem("users"));
+	}
+	data.push(newuser);
+	localStorage.setItem("users", JSON.stringify(data));
 }
