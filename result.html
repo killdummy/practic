@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="keywords" content="sonder">
+	<meta name="description" content="Таблица результатов">
+	<link rel="stylesheet" type="text/css" href="Практика.css">
+	<script type="text/javascript">
+	window.onload = function(){
+		var j = 0;
+		var data = [];
+		var names = document.getElementsByClassName("usertab");
+		var score = document.getElementsByClassName("anstab");
+		var times = document.getElementsByClassName("timetab");
+		data = JSON.parse(localStorage.getItem("users"));
+		var n = data.length;
+		for (var j = 0; j < n; j++){
+			names[j].innerHTML = String(data[j].name);
+			score[j].innerHTML = data[j].score + " очков";
+			var str = data[j].time;
+			str = str.substring(0, (str.length-14));
+			times[j].innerHTML = str;
+		}
+	}
+	</script>
+	<title>Таблица реузльтатов</title>
+</head>
+<body>
+	<div id="restab">
+		<div></div>
+		<div>ТАБЛИЦА РЕЗУЛЬТАТОВ</div>
+		<div></div>
+		<div>ИМЯ</div>
+		<div>РЕЗУЛЬТАТ</div>
+		<div>ДАТА</div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+		<div class="usertab"></div>
+		<div class="anstab"></div>
+		<div class="timetab"></div>
+	</div>
+</body>
+
+
+
+ 
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
