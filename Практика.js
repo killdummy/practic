@@ -4,7 +4,7 @@ window.onload = init;
 var ctxMap, map, mapWidth = 1400, mapHeight = 600, healthHero, manaHero, recovery, score = 0, pause = false, turn = 0;
 var rightPressed = false, leftPressed = false, jumpPressed = false;
 var heroImageRight = new Image();
-heroImageRight.src = "images/animRight.png";
+heroImageRight.src = "images/heroAnim.png";
 ///
 var blood = new Image();
 blood.src = "images/blood.png";
@@ -52,7 +52,7 @@ function init(){
 	map.width = mapWidth;
 	map.height = mapHeight;
 
-	spawnOpponent(7);
+	spawnOpponent(1);
 
 	startLoop();
 
@@ -153,7 +153,7 @@ function spawnOpponent(count){
 			enemies.push({
 				health: 30,
 				x: Math.floor(Math.random() * mapWidth) + mapWidth,
-				y: 490,
+				y: 450,
 				pW: 100,
 				pH: 100,
 				effect: false,
@@ -175,7 +175,7 @@ function spawnOpponent(count){
 			enemies.push({
 				health: 30,
 				x: Math.floor(Math.random() * mapWidth) - mapWidth,
-				y: 490,
+				y: 450,
 				pW: 100,
 				pH: 100,
 				effect: false,
@@ -244,7 +244,7 @@ var drawMap = {
 
 var drawBullet = {
 	draw: function(){
-		ctxMap.drawImage(bulletImage, 0, 0, 60, 58, bullet[i].x, bullet[i].y, 50, 50);
+		ctxMap.drawImage(bulletImage, 0, 0, 60, 58, bullet[i].x, bullet[i].y, 40, 40);
 	},
 	drawLight: function(){
 		ctxMap.drawImage(lightningImage, 0, 0, 497, 556, lightning[i].x, lightning[i].y, 70, 250);
@@ -264,22 +264,23 @@ var player = {
 	health: 100,
 	mana: 100,
 	x: 400,
-	y: 450,
-	pW: 150,
-	pH: 150,
+	y: 470,
+	pW: 80,
+	pH: 80,
 	velX: 0,
 	keys: [],
-	speed: 8,
+	speed: 5,
 	jumpCount: 0,
 	jumpLength: 50,
-	xCadrChangeRight: 0,
-	xCadrChangeLeft: 556,
-	yCadrChange: 0,
+	xCadrChangeRight: 490,
+	xCadrChangeLeft: 490,
+	yCadrChangeRight: 576,
+	yCadrChangeLeft: 480,
 	drawRight: function(){
-		ctxMap.drawImage(heroImageRight, this.xCadrChangeRight, this.yCadrChange, 113, 150, this.x, this.y, this.pW, this.pH);
+		ctxMap.drawImage(heroImageRight, this.xCadrChangeRight, this.yCadrChangeRight, 90, 95, this.x, this.y, this.pW, this.pH);
 	},
 	drawLeft: function(){
-		ctxMap.drawImage(heroImageLeft, this.xCadrChangeLeft, this.yCadrChange, 113, 150, this.x, this.y, this.pW, this.pH);
+		ctxMap.drawImage(heroImageRight, this.xCadrChangeLeft, this.yCadrChangeLeft, 90, 95, this.x, this.y, this.pW, this.pH);
 	},
 	///
 	damaged: function(){
@@ -302,14 +303,14 @@ function draw(){
 	if (tickCount > 7){
 		tickCount = 0;
 		if (rightPressed) {
-			player.xCadrChangeRight = (player.xCadrChangeRight > 556 ? 0 : player.xCadrChangeRight + 113);
+			player.xCadrChangeRight = (player.xCadrChangeRight < 291 ? 490 : player.xCadrChangeRight - 100);
 		}else{
-			player.xCadrChangeRight = 0;
+			player.xCadrChangeRight = 490;
 		}
 		if (leftPressed) {
-			player.xCadrChangeLeft = (player.xCadrChangeLeft < 113 ? 556 : player.xCadrChangeLeft - 113);
+			player.xCadrChangeLeft = (player.xCadrChangeLeft < 291 ? 490 : player.xCadrChangeLeft - 100);
 		}else{
-			player.xCadrChangeLeft = 556;
+			player.xCadrChangeLeft = 490;
 		}
 	}
 
@@ -508,16 +509,16 @@ function draw(){
 				if (bullets <= 0){
                     if (orientation == 0){
                         bullet.push({
-                            x: player.x + player.pW/2,
-                            y: player.y + player.pH/2,
+                            x: player.x + player.pW/2 - 10,
+                            y: player.y + player.pH/2 - 10,
                             vx: 10,
                             vy: 0,
                             move: 10
                         });
                     }else {
                         bullet.push({
-                            x: player.x + player.pW/2,
-                            y: player.y + player.pH/2,
+                            x: player.x + player.pW/2 - 10,
+                            y: player.y + player.pH/2 - 10,
                             vx: 10,
                             vy: 0,
                             move: -10
