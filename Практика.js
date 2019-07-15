@@ -29,10 +29,13 @@ var waveRightImage = new Image();
 waveRightImage.src = "images/waveRight.png"
 var waveLeftImage = new Image();
 waveLeftImage.src = "images/waveLeft.png"
+var skillImage = new Image();
+skillImage.src = "images/use3skill.png"
 var testX = 0, testY = 0;
 var isPlaying;
 var bullet = [], lightning = [], enemies = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
-var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, tickCount = 0;
+var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, tickCount = 0, tickCountSkill = 0, xCadrSkill = 0;
+var yCadrSkill = 0, stormActive = false;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
@@ -52,7 +55,7 @@ function init(){
 	map.width = mapWidth;
 	map.height = mapHeight;
 
-	spawnOpponent(7);
+	spawnOpponent(0);
 
 	startLoop();
 
@@ -229,16 +232,16 @@ var drawEnemies = {
 		ctxMap.drawImage(imageOpponent, enemies[i].xCadrChange, enemies[i].yCadrChange, 70, 70, enemies[i].x, enemies[i].y, 100, 100);
 	},
 	drawBossRight: function(){
-		ctxMap.drawImage(bossImageRight, 0, 0, 600, 500, enemies[i].x, enemies[i].y, 300, 300);
+		ctxMap.drawImage(bossImageRight, 0, 0, 600, 500, enemies[i].x, enemies[i].y-35, 300, 300);
 	},
 	drawBossLeft: function(){
-		ctxMap.drawImage(bossImageLeft, 0, 0, 600, 500, enemies[i].x, enemies[i].y, 300, 300);
+		ctxMap.drawImage(bossImageLeft, 0, 0, 600, 500, enemies[i].x, enemies[i].y-35, 300, 300);
 	}
 }
 
 var drawMap = {
 	draw1: function(){
-		ctxMap.drawImage(mapImage1, 0, 90, 2500, 1500, mapDrawWidth1-300, 0, mapWidth+500, mapHeight+500);
+		ctxMap.drawImage(mapImage1, 0, 90, 2500, 1500, mapDrawWidth1-400, 0, mapWidth+800, mapHeight+500);
 	}
 }
 
@@ -247,29 +250,32 @@ var drawBullet = {
 		ctxMap.drawImage(bulletImage, 0, 0, 60, 58, bullet[i].x, bullet[i].y, 40, 40);
 	},
 	drawLight: function(){
-		ctxMap.drawImage(lightningImage, 0, 0, 497, 556, lightning[i].x, lightning[i].y, 70, 250);
+		ctxMap.drawImage(lightningImage, 0, 0, 497, 556, lightning[i].x, lightning[i].y, 70, 215);
 	},
 	drawShield: function(){
-		ctxMap.drawImage(shieldImage, 0, 350, 200, 200, player.x-47, player.y-25, 250, 200);
+		ctxMap.drawImage(shieldImage, 0, 350, 200, 200, player.x-62, player.y-45, 200, 150);
 	},
 	drawWaveRight: function(){
-		ctxMap.drawImage(waveRightImage, 0, 0, 165, 250, waveRight, player.y, 100, 150);
+		ctxMap.drawImage(waveRightImage, 0, 0, 165, 250, waveRight-30, player.y, 80, 85);
 	},
 	drawWaveLeft: function(){
-		ctxMap.drawImage(waveLeftImage, 0, 0, 165, 250, waveLeft, player.y, 100, 150);
+		ctxMap.drawImage(waveLeftImage, 0, 0, 165, 250, waveLeft-30, player.y, 80, 85);
+	},
+	drawSkill: function(){
+		ctxMap.drawImage(skillImage, xCadrSkill, yCadrSkill, 192, 192, player.x-35, player.y-35, player.pW+60, player.pH+60);
 	}
 }
 
 var player = {
 	health: 100,
 	mana: 100,
-	x: 400,
+	x: 700,
 	y: 470,
 	pW: 80,
 	pH: 80,
 	velX: 0,
 	keys: [],
-	speed: 5,
+	speed: 4,
 	jumpCount: 0,
 	jumpLength: 50,
 	xCadrChangeRight: 490,
@@ -284,7 +290,7 @@ var player = {
 	},
 	///
 	damaged: function(){
-		ctxMap.drawImage(blood, 0, 0, 700, 700, this.x + 40, this.y + 70, this.pW - 75, this.pH - 75);
+		ctxMap.drawImage(blood, 0, 0, 700, 700, this.x, this.y + 20, this.pW - 20, this.pH - 20);
 	}
 	///
 }
@@ -299,6 +305,25 @@ function draw(){
 	}else{
 		player.drawLeft();
 	}
+
+	if (stormActive) {
+		if (tickCountSkill > 2){
+			tickCountSkill = 0;
+			if (xCadrSkill >= 768){
+				xCadrSkill = 0;
+				yCadrSkill += 192;
+			}else{
+				xCadrSkill += 192;
+			}
+			if (xCadrSkill >= 768 && yCadrSkill >= 576) {
+				stormActive = false;
+				xCadrSkill = 0;
+				yCadrSkill = 0;
+			}
+		}
+		drawBullet.drawSkill();
+	}
+	tickCountSkill++;
 
 	if (tickCount > 7){
 		tickCount = 0;
@@ -330,24 +355,24 @@ function draw(){
 		}
 	}
 	
-	if (rightPressed && player.x < mapWidth - 150) {
-		mapDrawWidth1--;
+	if (rightPressed && player.x < mapWidth - 80) {
+		mapDrawWidth1 -= player.speed / 2;
 		player.x += player.speed;
 	}
     if (leftPressed && player.x > 0) {
-    	mapDrawWidth1++;
+    	mapDrawWidth1 += player.speed / 2;
     	player.x -= player.speed;
     }
 
     if (jumpPressed) {
         player.jumpCount++;
-        player.y = -(3 * player.jumpLength * Math.sin(Math.PI * player.jumpCount / player.jumpLength)) + 450;
+        player.y = -(3 * player.jumpLength * Math.sin(Math.PI * player.jumpCount / player.jumpLength)) + 470;
     } 
 
     if(player.jumpCount > player.jumpLength){
     	player.jumpCount = 0;
     	jumpPressed = false;
-    	player.y = 450;
+    	player.y = 470;
 	}
 
 	for (i = 0; i < bullet.length; i++){
@@ -364,7 +389,7 @@ function draw(){
 	}
 
 	for (i = 0; i < enemies.length; i++){
-		enemies[i].tickCount++;
+		if (!boss) enemies[i].tickCount++;
 		if (!boss){
 			if (enemies[i].timer != 50) enemies[i].timer++;
 			if (!enemies[i].effect){
@@ -427,7 +452,7 @@ function draw(){
 			}
 		}
 		if (!boss){
-			if ((enemies[i].x > player.x) && (enemies[i].x < player.x + player.pW - 100) && (player.y > 340) && (!shieldActiv)){
+			if ((enemies[i].x > player.x - 75) && (enemies[i].x < (player.x + player.pW - 50)) && (player.y > 440) && (!shieldActiv)){
 				/// Добавил - 100 чтобы враги били одинаково с двух сторон
 				enemies[i].atack();
 //				player.health -= 1;
@@ -444,7 +469,7 @@ function draw(){
 		}
 
 		for (j = 0; j < bullet.length; j++){
-			if ((bullet[j].x > enemies[i].x) && (bullet[j].x < enemies[i].x + enemies[i].pW)){
+			if ((bullet[j].x > enemies[i].x) && (bullet[j].x < enemies[i].x + enemies[i].pW) && (bullet[j].y > enemies[i].y)){
 				bullet.splice(j, 1);
 				enemies[i].health -= 10;
 			}
@@ -529,6 +554,7 @@ function draw(){
 				break;
 			case 51:
 				if (player.mana > 29){
+					stormActive = true;
 					var moveLight = turn;
 					var countLight = 0;
 					var lightsX = player.x;
