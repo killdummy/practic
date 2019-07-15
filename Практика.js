@@ -55,7 +55,7 @@ function init(){
 	map.width = mapWidth;
 	map.height = mapHeight;
 
-	spawnOpponent(0);
+	spawnOpponent(7);
 
 	startLoop();
 
@@ -241,7 +241,7 @@ var drawEnemies = {
 
 var drawMap = {
 	draw1: function(){
-		ctxMap.drawImage(mapImage1, 0, 90, 2500, 1500, mapDrawWidth1-400, 0, mapWidth+800, mapHeight+500);
+		ctxMap.drawImage(mapImage1, 0, 90, 2500, 1500, mapDrawWidth1-450, 0, mapWidth+800, mapHeight+500);
 	}
 }
 
@@ -269,7 +269,7 @@ var drawBullet = {
 var player = {
 	health: 100,
 	mana: 100,
-	x: 700,
+	x: mapWidth / 2,
 	y: 470,
 	pW: 80,
 	pH: 80,
@@ -395,7 +395,7 @@ function draw(){
 			if (!enemies[i].effect){
 				if (enemies[i].x <= player.x){
 					if (leftPressed){
-						enemies[i].x += 3;
+						enemies[i].x += 4;
 					}else{
 						enemies[i].x += 2;
 					}
@@ -407,7 +407,7 @@ function draw(){
 					drawEnemies.drawRight();
 				}else{
 					if (rightPressed){
-						enemies[i].x -= 3;
+						enemies[i].x -= 4;
 					}else{
 						enemies[i].x -= 2;
 					}
@@ -438,14 +438,14 @@ function draw(){
 			if (enemies[i].move > 0){
 				drawEnemies.drawBossRight();
 				if (leftPressed){
-					enemies[i].x += 2;
+					enemies[i].x += 3;
 				}else{
 					enemies[i].x += 1;
 				}
 			}else{
 				drawEnemies.drawBossLeft();
 				if (rightPressed){
-					enemies[i].x -= 2;
+					enemies[i].x -= 3;
 				}else{
 					enemies[i].x -= 1;
 				}
@@ -502,7 +502,6 @@ function draw(){
 		player.health = 100;
 		player.mana = 100;
 		spawnOpponent(7);
-		score = 0;
 		boss = false;
 		///
 		stopLoop();
@@ -572,7 +571,7 @@ function draw(){
 										});
 									}else{
 										lightning.push({
-											x: Math.random() * 200 + lightsX - player.pW * 2,
+											x: Math.random() * 200 + lightsX - player.pW * 4,
 											y: 350,
 											pW: 30,
 											pH: 250,
@@ -605,9 +604,10 @@ function showButtons(){
 
 function newgame(){
 	document.getElementById("afterdeath").style.display = "none";
-	player.x = 400;
+	player.x = mapWidth / 2;
 	player.y = 450;
 	pause = false;
+	score = 0;
 	startLoop();
 }
 
