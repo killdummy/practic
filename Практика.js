@@ -26,16 +26,20 @@ lightningImage.src = "images/lightning.png";
 var shieldImage = new Image();
 shieldImage.src = "images/shield.png";
 var waveRightImage = new Image();
-waveRightImage.src = "images/waveRight.png"
+waveRightImage.src = "images/waveRight.png";
 var waveLeftImage = new Image();
-waveLeftImage.src = "images/waveLeft.png"
+waveLeftImage.src = "images/waveLeft.png";
 var skillImage = new Image();
-skillImage.src = "images/use3skill.png"
+skillImage.src = "images/use3skill.png";
+var potionImageHeal = new Image();
+potionImageHeal.src = "images/potionHeal.png";
+var potionImageMana = new Image();
+potionImageMana.src = "images/potionMana.png";
 var testX = 0, testY = 0;
 var isPlaying;
-var bullet = [], lightning = [], enemies = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
+var bullet = [], lightning = [], enemies = [], potions = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
 var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, tickCount = 0, tickCountSkill = 0, xCadrSkill = 0;
-var yCadrSkill = 0, stormActive = false;
+var yCadrSkill = 0, stormActive = false, heal = false, mana = false;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
@@ -266,6 +270,30 @@ var drawBullet = {
 	}
 }
 
+var potionHeal = {
+	health: 30, 
+	x: Math.floor(Math.random() * mapWidth),
+	y: 500,
+	pW: 50,
+	pH: 50,
+	timer: 0,
+	drawPotion: function(){
+		ctxMap.drawImage(potionImageHeal, 0, 0, 568, 661, this.x, this.y, this.pW, this.pH);
+	}
+}
+
+var potionMana = {
+	mana: 30, 
+	x: Math.floor(Math.random() * mapWidth),
+	y: 510,
+	pW: 33,
+	pH: 33,
+	timer: 0,
+	drawPotion: function(){
+		ctxMap.drawImage(potionImageMana, 0, 0, 100, 100, this.x, this.y, this.pW, this.pH);
+	}
+}
+
 var player = {
 	health: 100,
 	mana: 100,
@@ -299,6 +327,30 @@ function draw(){
 	ctxMap.clearRect(0, 0, mapWidth, mapHeight);
 	drawMap.draw1();
 	stat();
+
+	//potion
+	if (player.health < 50 && potionHeal.timer == 400) heal = true;
+
+	if (heal) potionHeal.drawPotion();
+
+	if (player.y == 470 && player.x > potionHeal.x && player.x < potionHeal.x + 10 && heal && player.health < 100){
+		player.health = (player.health > 70 ? 100 : player.health + potionHeal.health);
+		heal = false; 
+		potionHeal.x = Math.floor(Math.random() * mapWidth);
+		potionHeal.timer = 0;
+	}
+
+	if (player.mana < 50 && potionMana.timer == 400) mana = true;
+
+	if (mana) potionMana.drawPotion();
+
+	if (player.y == 470 && player.x > potionMana.x && player.x < potionMana.x + 10 && mana && player.mana < 100){
+		player.mana = (player.mana > 70 ? 100 : player.mana + potionMana.mana);
+		mana = false; 
+		potionMana.x = Math.floor(Math.random() * mapWidth);
+		potionMana.timer = 0;
+	}
+	//
 
 	if (turn == 0) {
 		player.drawRight();
@@ -339,7 +391,10 @@ function draw(){
 		}
 	}
 
+	timer++;
 	tickCount++;
+	if (potionHeal.timer < 400) potionHeal.timer++;
+	if (potionMana.timer < 400) potionMana.timer++;
 	
 	
 	document.form.score.value = score;
@@ -357,10 +412,14 @@ function draw(){
 	
 	if (rightPressed && player.x < mapWidth - 80) {
 		mapDrawWidth1 -= player.speed / 2;
+		potionHeal.x -= player.speed;
+		potionMana.x -= player.speed;
 		player.x += player.speed;
 	}
     if (leftPressed && player.x > 0) {
     	mapDrawWidth1 += player.speed / 2;
+    	potionHeal.x += player.speed;
+    	potionMana.x += player.speed;
     	player.x -= player.speed;
     }
 
@@ -380,8 +439,6 @@ function draw(){
 		drawBullet.draw();
 		if ((bullet[i].x > mapWidth) || (bullet[i].x < 0)) bullet.splice(i, 1);
 	}
-
-	timer++;
 
 	if (timer % 12 == 0){
 		bullets = 0;
@@ -438,16 +495,16 @@ function draw(){
 			if (enemies[i].move > 0){
 				drawEnemies.drawBossRight();
 				if (leftPressed){
-					enemies[i].x += 3;
+					enemies[i].x += 4;
 				}else{
-					enemies[i].x += 1;
+					enemies[i].x += 2;
 				}
 			}else{
 				drawEnemies.drawBossLeft();
 				if (rightPressed){
-					enemies[i].x -= 3;
+					enemies[i].x -= 4;
 				}else{
-					enemies[i].x -= 1;
+					enemies[i].x -= 2;
 				}
 			}
 		}
@@ -530,7 +587,7 @@ function draw(){
 
 	addEventListener("keydown", function(event){
 		switch(event.keyCode){
-			case 74:
+			case 32:
 				if (bullets <= 0){
                     if (orientation == 0){
                         bullet.push({
