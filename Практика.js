@@ -495,16 +495,16 @@ function draw(){
 			if (enemies[i].move > 0){
 				drawEnemies.drawBossRight();
 				if (leftPressed){
-					enemies[i].x += 4;
+					enemies[i].x += 3.5;
 				}else{
-					enemies[i].x += 2;
+					enemies[i].x += 1.5;
 				}
 			}else{
 				drawEnemies.drawBossLeft();
 				if (rightPressed){
-					enemies[i].x -= 4;
+					enemies[i].x -= 3.5;
 				}else{
-					enemies[i].x -= 2;
+					enemies[i].x -= 1.5;
 				}
 			}
 		}
