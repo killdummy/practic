@@ -392,6 +392,7 @@ function draw(){
 	}
 
 	timer++;
+	if (timer > 1000) timer = 0;
 	tickCount++;
 	if (potionHeal.timer < 400) potionHeal.timer++;
 	if (potionMana.timer < 400) potionMana.timer++;
