@@ -165,8 +165,11 @@ function spawnOpponent(count){
 						player.health -= 10;
 						this.timer = 0;
 					}
-				}
+				},
 				///
+				xCadrChange: 0,
+				yCadrChange: 80,
+				tickCount: 0,
 			});
 		}else{
 			enemies.push({
@@ -184,8 +187,11 @@ function spawnOpponent(count){
 						player.health -= 10;
 						this.timer = 0;
 					}
-				}
+				},
 				///
+				xCadrChange: 0,
+				yCadrChange: 160,
+				tickCount: 0,
 			});
 		}
 		ran = Math.random();
@@ -217,10 +223,10 @@ function spawnBoss(){
 
 var drawEnemies = {
 	drawRight: function(){
-		ctxMap.drawImage(imageOpponent, 0, 160, 70, 70, enemies[i].x, enemies[i].y, 100, 100);
+		ctxMap.drawImage(imageOpponent, enemies[i].xCadrChange, enemies[i].yCadrChange, 70, 70, enemies[i].x, enemies[i].y, 100, 100);
 	},
 	drawLeft: function(){
-		ctxMap.drawImage(imageOpponent, 0, 80, 70, 70, enemies[i].x, enemies[i].y, 100, 100);
+		ctxMap.drawImage(imageOpponent, enemies[i].xCadrChange, enemies[i].yCadrChange, 70, 70, enemies[i].x, enemies[i].y, 100, 100);
 	},
 	drawBossRight: function(){
 		ctxMap.drawImage(bossImageRight, 0, 0, 600, 500, enemies[i].x, enemies[i].y, 300, 300);
@@ -315,8 +321,6 @@ function draw(){
 	if (shieldActiv) drawBullet.drawShield();
 	if (player.mana < 5) shieldActiv = false;
 
-
-
 	if (lightning.length != 0){
 		for (i = 0; i < lightning.length; i++){
 			drawBullet.drawLight();
@@ -359,14 +363,33 @@ function draw(){
 	}
 
 	for (i = 0; i < enemies.length; i++){
+		enemies[i].tickCount++;
 		if (!boss){
 			if (enemies[i].timer != 50) enemies[i].timer++;
 			if (!enemies[i].effect){
 				if (enemies[i].x <= player.x){
-					enemies[i].x += 2;
+					if (leftPressed){
+						enemies[i].x += 3;
+					}else{
+						enemies[i].x += 2;
+					}
+					if (enemies[i].tickCount > 15){
+						enemies[i].tickCount = 0;
+						enemies[i].yCadrChange = 160;
+						enemies[i].xCadrChange = (enemies[i].xCadrChange > 239 ? 0 : enemies[i].xCadrChange + 80);
+					}
 					drawEnemies.drawRight();
 				}else{
-					enemies[i].x -= 2;
+					if (rightPressed){
+						enemies[i].x -= 3;
+					}else{
+						enemies[i].x -= 2;
+					}
+					if (enemies[i].tickCount > 15){
+						enemies[i].tickCount = 0;
+						enemies[i].yCadrChange = 80;
+						enemies[i].xCadrChange = (enemies[i].xCadrChange > 239 ? 0 : enemies[i].xCadrChange + 80);
+					}
 					drawEnemies.drawLeft();
 				}
 			}else{
@@ -388,10 +411,18 @@ function draw(){
 		}else{
 			if (enemies[i].move > 0){
 				drawEnemies.drawBossRight();
-				enemies[i].x += 2;
+				if (leftPressed){
+					enemies[i].x += 2;
+				}else{
+					enemies[i].x += 1;
+				}
 			}else{
 				drawEnemies.drawBossLeft();
-				enemies[i].x -= 2;
+				if (rightPressed){
+					enemies[i].x -= 2;
+				}else{
+					enemies[i].x -= 1;
+				}
 			}
 		}
 		if (!boss){
@@ -445,6 +476,7 @@ function draw(){
 		player.health = 100;
 		player.mana = 100;
 		spawnOpponent(7);
+		score = 0;
 		boss = false;
 		///
 		stopLoop();
@@ -549,7 +581,6 @@ function newgame(){
 	player.x = 400;
 	player.y = 450;
 	pause = false;
-	score = 0;
 	startLoop();
 }
 
