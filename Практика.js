@@ -86,7 +86,7 @@ function init(){
 					stopLoop();///no alert
 					ctxMap.fillStyle = "#00F";
     				ctxMap.font = "bold 30px sans-serif";
-    				ctxMap.fillText("Pause", 20, 50);
+    				ctxMap.fillText("Pause", 50, 50);
 				}else{
 					pause = false;
 					startLoop();
