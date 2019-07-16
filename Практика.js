@@ -39,7 +39,7 @@ var testX = 0, testY = 0;
 var isPlaying;
 var bullet = [], lightning = [], enemies = [], potions = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
 var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, tickCount = 0, tickCountSkill = 0, xCadrSkill = 0;
-var yCadrSkill = 0, stormActive = false, heal = false, mana = false, damageUp = false, healthUp = false, manaUp = false;
+var yCadrSkill = 0, stormActive = false, heal = false, mana = false, damageUp = false, healthUp = false, manaUp = false, startGame = true;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
@@ -65,6 +65,17 @@ function init(){
 
 	recoveryStat();
 
+	if (startGame = true){
+		stopLoop();
+		ctxMap.fillStyle = "white";
+    	ctxMap.font = "bold 30px sans-serif";
+    	ctxMap.fillText("Управление: D - вправо, A - влево, W - прыжок, space - стрельба", 50, 50);
+    	ctxMap.fillText("2 - отбрасывание, 3 - шторм, shift - щит, Esc - пауза", 50, 100);
+    	ctxMap.fillText("Зарабатывайте деньги, чтобы купить улучшение, каждое улучшение стоит 50 монет", 50, 150);
+    	ctxMap.fillText("Прожержитесь как можно дольше, удачи!!!", 50, 200);
+    	ctxMap.fillText("Нажмите ENTER чтобы начать", 50, 250);
+	}
+
 	addEventListener("keydown", function(event){
 		switch(event.keyCode){
 			case 68:
@@ -84,11 +95,17 @@ function init(){
 				if (pause == false){
 					pause = true;
 					stopLoop();///no alert
-					ctxMap.fillStyle = "#00F";
+					ctxMap.fillStyle = "white";
     				ctxMap.font = "bold 30px sans-serif";
     				ctxMap.fillText("Pause", 50, 50);
 				}else{
 					pause = false;
+					startLoop();
+				}
+				break;
+			case 13:
+				if (startGame = true){
+					startGame = false;
 					startLoop();
 				}
 				break;
@@ -538,9 +555,7 @@ function draw(){
 		}
 		if (!boss){
 			if ((enemies[i].x > player.x - 75) && (enemies[i].x < (player.x + player.pW - 50)) && (player.y > 440) && (!shieldActiv)){
-				/// Добавил - 100 чтобы враги били одинаково с двух сторон
 				enemies[i].atack();
-//				player.health -= 1;
 				player.damaged();
 			}
 		}else{
