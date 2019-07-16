@@ -590,6 +590,7 @@ function draw(){
 		shieldActiv = false;
 		bullet.splice(0, 100);
 		enemies.splice(0, 100);
+		lightning.splice(0, 100);
 		spawnOpponent(7);
 		mapDrawWidth1 = 0;
 		boss = false;
