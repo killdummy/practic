@@ -3,7 +3,7 @@
 <head>
 	<title>Millenium</title>
 	<link rel="stylesheet" type="text/css" href="Практика.css">
-	<script type="text/javascript" src="Практика.js"></script>
+	<script type="text/javascript" src="game.js"></script>
 	<link rel="shortcut icon" href="images/icon.ico" type="image/x-icon">
 </head>
 <body>
@@ -14,11 +14,21 @@
 		<div id="mana">
 			<div id="mana-row"></div>
 		</div>
+		<span class="text">score </span>
 		<div>
 			<form name="form">
 				<input type="text" name="" id="score" value="0">
 			</form>
 		</div>
+		<span class="text">coins </span>
+		<div>
+			<form name="form1">
+				<input type="text" name="" id="money" value="0">
+			</form>
+		</div>
+		<button onclick="damageLevelUp()" class="btnLevelUp" id="btnLevelUpDamage">damage++</button>
+		<button onclick="healthLevelUp()" class="btnLevelUp" id="btnLevelUpHealth">health++</button>
+		<button onclick="manaLevelUp()" class="btnLevelUp" id="btnLevelUpMana">mana++</button>
 	</div>
 	<canvas id="canvas"></canvas>
 	<form  action="#" name="form2" id="afterdeath">
