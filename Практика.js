@@ -1,7 +1,7 @@
 window.onload = init;
 
 //test
-var ctxMap, map, mapWidth = 1400, mapHeight = 600, healthHero, manaHero, recovery, score = 0, pause = false, turn = 0;
+var ctxMap, map, mapWidth = 1400, mapHeight = 600, healthHero, manaHero, recovery, score = 0, coins = 0, pause = false, turn = 0;
 var rightPressed = false, leftPressed = false, jumpPressed = false;
 var heroImageRight = new Image();
 heroImageRight.src = "images/heroAnim.png";
@@ -39,7 +39,7 @@ var testX = 0, testY = 0;
 var isPlaying;
 var bullet = [], lightning = [], enemies = [], potions = [], timer = 0, bullets = 0, lights = 0, i = 0, j = 0, orientation = 0, boss = false, shieldActiv = false;
 var effectActiv = false, waveCount = 0, waveLeft, waveRight, mapCount = 0, mapDrawWidth1 = 0, tickCount = 0, tickCountSkill = 0, xCadrSkill = 0;
-var yCadrSkill = 0, stormActive = false, heal = false, mana = false;
+var yCadrSkill = 0, stormActive = false, heal = false, mana = false, damageUp = false, healthUp = false, manaUp = false;
 
 var requestAnimFrame =  window.requestAnimationFrame ||
 						window.webkitRequestAnimationFrame ||
@@ -129,8 +129,6 @@ function init(){
 				break;
 		}
 	});
-
-	
 }
 
 function loop(){
@@ -294,6 +292,34 @@ var potionMana = {
 	}
 }
 
+function damageLevelUp(){
+	if (coins >= 50 && !damageUp){
+		damageUp = true;
+		coins -= 50;
+		document.getElementById("btnLevelUpDamage").style.textDecoration = "line-through";
+	} 
+}
+
+function healthLevelUp(){
+	if (coins >= 50 && !healthUp){
+		healthUp = true;
+		coins -= 50;
+		document.getElementById("health").style.width = '300px';
+		document.getElementById("health-row").style.width = '300px';
+		document.getElementById("btnLevelUpHealth").style.textDecoration = "line-through";
+	} 
+}
+
+function manaLevelUp(){
+	if (coins >= 50 && !manaUp){
+		manaUp = true;
+		coins -= 50;
+	} 
+	document.getElementById("mana").style.width = '300px';
+	document.getElementById("mana-row").style.width = '300px';
+	document.getElementById("btnLevelUpMana").style.textDecoration = "line-through";
+}
+
 var player = {
 	health: 100,
 	mana: 100,
@@ -399,6 +425,7 @@ function draw(){
 	
 	
 	document.form.score.value = score;
+	document.form1.money.value = coins;
 
 	if (shieldActiv) drawBullet.drawShield();
 	if (player.mana < 5) shieldActiv = false;
@@ -529,18 +556,24 @@ function draw(){
 		for (j = 0; j < bullet.length; j++){
 			if ((bullet[j].x > enemies[i].x) && (bullet[j].x < enemies[i].x + enemies[i].pW) && (bullet[j].y > enemies[i].y)){
 				bullet.splice(j, 1);
-				enemies[i].health -= 10;
+				if (!damageUp){
+					enemies[i].health -= 10;
+				}else{
+					enemies[i].health -= 15;
+				}
 			}
 		}
 		if (enemies[i].health <= 0) {
 			if (!boss) {
 				enemies.splice(i, 1);
 				spawnOpponent(1);
+				coins += 5;
 			}else{
 				enemies.splice(0, 1);
 				i = 0;
 				boss = false;
 				spawnOpponent(7);
+				coins += 20;
 			}
 			score++;
 			if (score % 10 == 0) {
@@ -557,8 +590,6 @@ function draw(){
 		shieldActiv = false;
 		bullet.splice(0, 100);
 		enemies.splice(0, 100);
-		player.health = 100;
-		player.mana = 100;
 		spawnOpponent(7);
 		mapDrawWidth1 = 0;
 		boss = false;
@@ -650,9 +681,17 @@ function draw(){
 
 function recoveryStat(){
 	recovery = setInterval(function(){///&&(!pause)!
-		if ((player.mana < 100)&&(!pause)) player.mana += 5;
-		if ((player.health < 100)&&(!pause)) player.health += 2;
-		if ((shieldActiv)&&(!pause)) player.mana -= 20;
+		if ((shieldActiv) && (!pause)) player.mana -= 20;
+		if (!healthUp){
+			if ((player.health < 100) && (!pause)) player.health += 2;
+		}else{
+			if ((player.health < 150) && (!pause)) player.health += 2;
+		}
+		if (!manaUp){
+			if ((player.mana < 100) && (!pause)) player.mana += 5;
+		}else{
+			if ((player.mana < 150) && (!pause)) player.mana += 10;
+		}
 	}, 1000)
 }
 
@@ -664,9 +703,26 @@ function showButtons(){
 function newgame(){
 	document.getElementById("afterdeath").style.display = "none";
 	player.x = mapWidth / 2;
-	player.y = 450;
+	player.y = 470;
 	pause = false;
 	score = 0;
+	coins = 0;
+	potionHeal.timer = 0;
+	potionMana.timer = 0;
+	mana = false;
+	heal = false;
+	healthUp = false;
+	damageUp = false;
+	manaUp = false;
+	player.health = 100;
+	player.mana = 100;
+	document.getElementById("health").style.width = '200px';
+	document.getElementById("health-row").style.width = '200px';
+	document.getElementById("mana").style.width = '200px';
+	document.getElementById("mana-row").style.width = '200px';
+	document.getElementById("btnLevelUpDamage").style.textDecoration = "none";
+	document.getElementById("btnLevelUpHealth").style.textDecoration = "none";
+	document.getElementById("btnLevelUpMana").style.textDecoration = "none";
 	startLoop();
 }
 
